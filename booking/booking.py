@@ -15,6 +15,18 @@ with open('{}/databases/bookings.json'.format("."), "r") as jsf:
 def home():
    return "<h1 style='color:blue'>Welcome to the Booking service!</h1>"
 
+@app.route("/bookings", methods=['GET'])
+def get_json():
+    res = make_response(jsonify(bookings), 200)
+    return res
+
+@app.route("/bookings/<bookingid>", methods=['GET'])
+def get_booking_byid(bookingid):
+    for booking in bookings:
+        if str(booking["id"]) == str(bookingid):
+            res = make_response(jsonify(booking),200)
+            return res
+    return make_response(jsonify({"error":"Booking ID not found"}),400)
 
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))
