@@ -23,32 +23,23 @@ def get_user_byid(userid):
             return res
     return make_response(jsonify({"error":"User ID not found"}),400)
 
-@app.route("/usersbytitle", methods=['GET'])
-def get_user_byname():
-    json = ""
-    if request.args:
-        req = request.args
-        for user in users:
-            if str(user["name"]) == str(req["name"]):
-                json = user
+@app.route("/users/bookings/<userid>", methods=['GET'])
+def get_user_bookings(userid):
+    res = requests.get("http://localhost:3201/bookings/{}".format(userid)).json()
+    return make_response(res)
 
-    if not json:
-        res = make_response(jsonify({"error":"user name not found"}),400)
-    else:
-        res = make_response(jsonify(json),200)
-    return res
+@app.route("/users/infomovies/<userid>", methods=['GET'])
+def get_user_movies(userid):
+    res = requests.get("http://localhost:3201/bookings/{}".format(userid)).json()
+    movies = []
+    rvalue = []
+    for movie in res['dates'][0]['movies']:
+        movies.append(requests.get("http://localhost:3200/movies/{}".format(movie)).json())
 
-@app.route("/users/<userid>", methods=['POST'])
-def create_user(userid):
-    req = request.get_json()
+    for movie in movies:
+        rvalue.append(requests.get("http://localhost:3200/movies/{}".format(movie['id'])).json())
 
-    for user in users:
-        if str(user["id"]) == str(userid):
-            return make_response(jsonify({"error":"user ID already exists"}),409)
-
-    users.append(req)
-    res = make_response(jsonify({"message":"user added"}),200)
-    return res
+    return make_response(jsonify(rvalue),200)
 
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))
