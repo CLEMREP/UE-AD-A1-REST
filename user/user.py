@@ -23,7 +23,7 @@ def get_user_byid(userid):
             return res
     return make_response(jsonify({"error":"User ID not found"}),400)
 
-@app.route("/usersbytitle", methods=['GET'])
+@app.route("/usersbyname", methods=['GET'])
 def get_user_byname():
     json = ""
     if request.args:
