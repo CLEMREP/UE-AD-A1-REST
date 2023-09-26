@@ -20,7 +20,7 @@ def get_json():
     res = make_response(jsonify(bookings), 200)
     return res
 
-@app.route("/bookings/<bookingid>", methods=['GET'])
+@app.route("/bookings/<userid>", methods=['GET'])
 def get_booking_byid(bookingid):
     for booking in bookings:
         if str(booking["id"]) == str(bookingid):
