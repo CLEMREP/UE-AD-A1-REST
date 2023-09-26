@@ -21,9 +21,9 @@ def get_json():
     return res
 
 @app.route("/bookings/<userid>", methods=['GET'])
-def get_booking_byid(bookingid):
+def get_booking_byid(userid):
     for booking in bookings:
-        if str(booking["id"]) == str(bookingid):
+        if str(booking["userid"]) == str(userid):
             res = make_response(jsonify(booking),200)
             return res
     return make_response(jsonify({"error":"Booking ID not found"}),400)
