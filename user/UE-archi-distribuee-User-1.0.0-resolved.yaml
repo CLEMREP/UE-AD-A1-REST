@@ -28,7 +28,7 @@ paths:
             text/html:
               schema:
                 type: string
-                example: <h1>Test</h1>
+                example: <h1>Welcome to the User service!</h1>
   /users:
     get:
       tags:
@@ -41,20 +41,28 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllSchedule'
-  /usersbyname:
+                $ref: '#/components/schemas/AllUsers'
+
+  /users/infomovies/{userid}:
     get:
-      tags:
-      - developers
-      summary: get the user by the name
-      operationId: get_username
+      summary: Get movies for a user.
+      parameters:
+        - name: userid
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
       responses:
-        "200":
-          description: full JSON
+        '200':
+          description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllSchedule'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+
   /users/{userid}:
     get:
       tags:
@@ -62,9 +70,9 @@ paths:
       summary: get the user by id
       operationId: get_users_byid
       parameters:
-      - name: date
+      - id: int
         in: path
-        description: date.
+        description: integer.
         required: true
         style: simple
         explode: false
@@ -72,35 +80,91 @@ paths:
           type: string
       responses:
         "200":
-          description: Schedule
+          description: User
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Schedule'
+                $ref: '#/components/schemas/User'
         "400":
           description: bad input parameter
+
+  /users/bookings/{userid}:
+    get:
+      summary: Get bookings for a user.
+      parameters:
+        - name: userid
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+
 components:
   schemas:
-    AllSchedule:
+    AllUsers:
       required:
-      - schedule
+      - user
       type: object
       properties:
-        schedule:
+        users:
           type: array
           items:
-            $ref: '#/components/schemas/Schedule'
-    Schedule:
+            $ref: '#/components/schemas/User'
+    User:
       required:
-      - date
-      - movies
+      - id
+      - name
+      - last_active
       type: object
       properties:
-        date:
+        id:
           type: string
-          example: "20151130"
-        movies:
+          example: "garret_heaton"
+        name:
+          type: string
+          example: "Garret Heaton"
+        last_active:
+          type: int
+          example: 1360031425
+
+    Movie:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "a8034f44-aee4-44cf-b32c-74cf452aaaae"
+        title:
+          type: string
+          example: "The Martian"
+        director:
+          type: string
+          example: "Ridley Scott"
+        rate:
+          type: int
+          example: 8.2
+
+    Booking:
+      type: object
+      properties:
+        userid:
+          type: string
+        dates:
           type: array
           items:
-            type: string
-            example: 720d006c-3a57-4b6a-b18f-9b713b073f3c
+            type: object
+            properties:
+              date:
+                type: string
+              movies:
+                type: array
+                items:
+                  type: string
