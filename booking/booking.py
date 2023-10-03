@@ -28,6 +28,18 @@ def get_booking_byid(userid):
             return res
     return make_response(jsonify({"error":"Booking ID not found"}),400)
 
+@app.route("/bookings/<userid>", methods=['POST'])
+def create_booking(userid):
+    req = request.get_json()
+
+    for booking in bookings:
+        if str(booking["userid"]) == str(userid):
+            return make_response(jsonify({"error":"booking ID already exists"}),409)
+
+    bookings.append(req)
+    res = make_response(jsonify({"message":"booking added"}),200)
+    return res
+
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))
    app.run(host=HOST, port=PORT)
