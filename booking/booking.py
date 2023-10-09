@@ -26,7 +26,7 @@ def get_booking_byid(userid):
         if str(booking["userid"]) == str(userid):
             res = make_response(jsonify(booking),200)
             return res
-    return make_response(jsonify({"error":"Booking ID not found"}),400)
+    return make_response(jsonify({"error":"Booking with this UserID not found"}),400)
 
 @app.route("/bookings/<userid>", methods=['POST'])
 def create_booking(userid):
